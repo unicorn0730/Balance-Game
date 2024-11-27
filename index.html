@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Picture Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    .image-card {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+      width: 250px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .image-card:hover {
+      transform: scale(1.05);
+      border-color: #007bff;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .vs {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Select Your Preferred Picture</h1>
+  <div class="container">
+    <div class="image-card" onclick="vote('Option 1')">
+      <img src="data:image/png;base64,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" alt="Option 1">
+      <p>Option 1</p>
+    </div>
+    <p class="vs">VS</p>
+    <div class="image-card" onclick="vote('Option 2')">
+      <img src="https://cdn.mos.cms.futurecdn.net/FaWKMJQnr2PFcYCmEyfiTm-1200-80.jpg" alt="Option 2">
+      <p>Option 2</p>
+    </div>
+  </div>
+  <script>
+    function vote(option) {
+      alert(`You selected: ${option}`);
+    }
+  </script>
+</body>
+</html>
