@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local LLM Interface</title>
+</head>
+<body>
+  <h1>Local LLM Interface</h1>
+  <textarea id="prompt" rows="5" cols="60" placeholder="Enter your prompt here..."></textarea><br>
+  <button id="send">Send</button>
+  <h2>Response:</h2>
+  <pre id="response"></pre>
+<script>
+  document.getElementById('send').addEventListener('click', async () => {
+    const prompt = document.getElementById('prompt').value;
+    const res = await fetch('/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    document.getElementById('response').textContent = data.response;
+  });
+</script>
+</body>
+</html>
