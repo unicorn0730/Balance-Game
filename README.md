@@ -1,20 +1,21 @@
 # LocalLLM-2
 
-This project provides a simple web interface to interact with a local Large Language Model running via [Ollama](https://github.com/jmorganca/ollama) on your machine. It consists of a Python Flask backend and a minimal HTML frontend.
+This project provides a simple web interface to interact with a local Large Language Model running via [Ollama](https://github.com/jmorganca/ollama). It now uses **FastAPI** for the backend and a minimal HTML frontend.
 
 ## Setup
 
-1. Ensure that Ollama is installed and running on your Mac. By default the API is accessible at `http://localhost:11434`.
-2. Create a Python environment and install the requirements:
+1. Ensure that Ollama is installed and running. By default the API is accessible at `http://localhost:11434`.
+2. Install the Python requirements:
    ```bash
    pip install -r requirements.txt
    ```
-3. Run the application:
+3. Start the application:
    ```bash
-   python app.py
+   uvicorn app:app --reload
    ```
-4. Open `http://localhost:5000` in your browser to interact with the local LLM.
+   The server listens on port `8000` by default. You can set `PORT`, `OLLAMA_URL`, or `OLLAMA_MODEL` environment variables to customise behaviour.
+4. Open `http://localhost:8000` in your browser to interact with the local LLM.
 
 ## Repository Rename
 
-The original repository has been renamed to **LocalLLM-2** to reflect its new purpose as an interface for a local LLM instead of the previous balance game example.
+The original repository has been renamed to **LocalLLM-2** to reflect its purpose as an interface for a local LLM.

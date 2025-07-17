@@ -1,33 +1,40 @@
-from flask import Flask, request, jsonify, send_from_directory
-import requests
+import os
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+import httpx
+import uvicorn
 
-app = Flask(__name__)
+app = FastAPI()
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "mistral"  # Change to your local model name
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+MODEL = os.getenv("OLLAMA_MODEL", "mistral")
 
-@app.route('/')
-def index():
-    return send_from_directory('static', 'index.html')
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.route('/ask', methods=['POST'])
-def ask():
-    data = request.get_json(force=True)
-    prompt = data.get('prompt', '')
 
-    payload = {
-        "model": MODEL,
-        "prompt": prompt,
-        "stream": False
-    }
-    try:
-        resp = requests.post(OLLAMA_URL, json=payload)
-        resp.raise_for_status()
-        answer = resp.json().get('response', '')
-    except Exception as e:
-        answer = f"Error contacting LLM: {e}"
+@app.get("/")
+async def index():
+    return FileResponse("static/index.html")
 
-    return jsonify({"response": answer})
 
-if __name__ == '__main__':
-    app.run(port=5000)
+@app.post("/ask")
+async def ask(data: dict):
+    prompt = data.get("prompt", "")
+    payload = {"model": MODEL, "prompt": prompt, "stream": False}
+
+    async with httpx.AsyncClient() as client:
+        try:
+            resp = await client.post(OLLAMA_URL, json=payload)
+            resp.raise_for_status()
+            answer = resp.json().get("response", "")
+        except Exception as e:
+            raise HTTPException(
+                status_code=502, detail=f"Error contacting LLM: {e}"
+            ) from e
+
+    return {"response": answer}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))

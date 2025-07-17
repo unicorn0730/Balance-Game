@@ -11,17 +11,24 @@
   <button id="send">Send</button>
   <h2>Response:</h2>
   <pre id="response"></pre>
-<script>
-  document.getElementById('send').addEventListener('click', async () => {
-    const prompt = document.getElementById('prompt').value;
-    const res = await fetch('/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+  <script>
+    document.getElementById('send').addEventListener('click', async () => {
+      const prompt = document.getElementById('prompt').value;
+      try {
+        const res = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        if (!res.ok) {
+          throw new Error('Request failed');
+        }
+        const data = await res.json();
+        document.getElementById('response').textContent = data.response;
+      } catch (err) {
+        document.getElementById('response').textContent = err;
+      }
     });
-    const data = await res.json();
-    document.getElementById('response').textContent = data.response;
-  });
-</script>
+  </script>
 </body>
 </html>
